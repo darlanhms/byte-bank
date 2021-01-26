@@ -1,16 +1,16 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-Future<Database> createDatabase() {
-  return getDatabasesPath().then((dbPath) {
-    final String joinedPath = join(dbPath, 'bytebank.db');
+Future<Database> getDatabase() async {
+  final String dbPath = await getDatabasesPath();
 
-    return openDatabase(
-      joinedPath,
-      onCreate: (db, version) => _handleCreateTables(db, version),
-      version: 1,
-    );
-  });
+  final String joinedPath = join(dbPath, 'bytebank.db');
+
+  return openDatabase(
+    joinedPath,
+    onCreate: (db, version) => _handleCreateTables(db, version),
+    version: 1,
+  );
 }
 
 void _handleCreateTables(Database db, int version) {

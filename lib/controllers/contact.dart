@@ -1,22 +1,23 @@
 import 'package:bytebank/database/app_database.dart';
 import 'package:bytebank/models/contact.dart';
+import 'package:sqflite/sqflite.dart';
 
-Future<int> saveContact(Contact contact) {
-  return createDatabase().then((db) {
-    return db.insert("contacts", contact.toJSON(true));
-  });
+Future<int> saveContact(Contact contact) async {
+  final Database db = await getDatabase();
+
+  return db.insert("contacts", contact.toJSON(true));
 }
 
-Future<List<Contact>> findAllContacts() {
-  return createDatabase().then((db) {
-    return db.query('contacts').then((maps) {
-      final List<Contact> contacts = List();
+Future<List<Contact>> findAllContacts() async {
+  final Database db = await getDatabase();
 
-      maps.forEach((element) {
-        contacts.add(Contact.fromJSON(element, true));
-      });
+  final List<Map<String, dynamic>> maps = await db.query('contacts');
 
-      return contacts;
-    });
+  final List<Contact> contacts = List();
+
+  maps.forEach((element) {
+    contacts.add(Contact.fromJSON(element, true));
   });
+
+  return contacts;
 }
